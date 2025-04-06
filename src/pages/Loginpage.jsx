@@ -29,7 +29,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">
-          Sales Rep CRM Login
+           Login
         </h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
