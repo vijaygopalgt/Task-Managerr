@@ -8,8 +8,7 @@ localforage.config({
 
 const useTaskStore = create((set) => ({
   tasks: [],
-  
-  // Load tasks from localforage on startup
+
   loadTasks: async () => {
     try {
       const savedTasks = await localforage.getItem("tasks");
@@ -20,8 +19,7 @@ const useTaskStore = create((set) => ({
       console.error("Failed to load tasks from localforage:", error);
     }
   },
-  
-  // Add a new task and update localforage
+
   addTask: (task) =>
     set((state) => {
       const updatedTasks = [...state.tasks, task];
@@ -31,7 +29,6 @@ const useTaskStore = create((set) => ({
       return { tasks: updatedTasks };
     }),
 
-  // Update a task and store the updated list in localforage
   updateTask: (id, updatedTask) =>
     set((state) => {
       const updatedTasks = state.tasks.map((task) =>
@@ -43,7 +40,6 @@ const useTaskStore = create((set) => ({
       return { tasks: updatedTasks };
     }),
 
-  // Delete a task and update localforage
   deleteTask: (id) =>
     set((state) => {
       const updatedTasks = state.tasks.filter((task) => task.id !== id);
@@ -52,6 +48,20 @@ const useTaskStore = create((set) => ({
       });
       return { tasks: updatedTasks };
     }),
+
+  filterTasks: (filter) => {
+    return (get) => {
+      const { tasks } = get();
+      if (filter === "all") {
+        return tasks;
+      } else if (filter === "completed") {
+        return tasks.filter((task) => task.completed === true);
+      } else if (filter === "pending") {
+        return tasks.filter((task) => task.completed !== true);
+      }
+      return tasks;
+    };
+  }
 }));
 
 export default useTaskStore;

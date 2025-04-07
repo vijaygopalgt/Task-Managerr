@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import TaskItem from "./TaskItem";
+import TaskItem from "./Taskitem";
 import FilterButtons from "./Filterbutton";
 import useTaskStore from "../storage/taskStore";
 
 const TaskList = () => {
-  const { tasks, loadTasks, filterTasks } = useTaskStore();
+  const { tasks, loadTasks } = useTaskStore();
   const [loading, setLoading] = useState(true);
   const [filteredTasks, setFilteredTasks] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
     loadTasks(); // Load tasks when the component mounts
@@ -18,8 +19,14 @@ const TaskList = () => {
   }, [tasks]);
 
   const handleFilterChange = (newFilter) => {
-    const filtered = filterTasks(newFilter); // Filter tasks based on the selection
-    setFilteredTasks(filtered);
+    setActiveFilter(newFilter);
+    if (newFilter === "all") {
+      setFilteredTasks(tasks);
+    } else if (newFilter === "completed") {
+      setFilteredTasks(tasks.filter((task) => task.completed === true));
+    } else if (newFilter === "pending") {
+      setFilteredTasks(tasks.filter((task) => task.completed !== true));
+    }
   };
 
   if (loading) {
