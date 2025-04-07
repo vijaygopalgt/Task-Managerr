@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import useTaskStore from "../storage/taskStore";
 import EditTaskModal from "./edit";
+import localforage from 'localforage';
 
 const TaskItem = ({ task }) => {
   const { updateTask, deleteTask } = useTaskStore();
   const [isEditing, setIsEditing] = useState(false);
 
-  // Toggle the task completion status
   const toggleCompletion = () => {
-    updateTask(task.id, { ...task, completed: !task.completed });
+    const updatedTask = { ...task, completed: !task.completed };
+    updateTask(task.id, updatedTask);
+    localforage.setItem("tasks", useTaskStore.getState().tasks); // Save updated tasks
   };
-
-  // Handle the save of the edited task
+  
   const handleEditSave = (updatedTask) => {
     updateTask(task.id, updatedTask);
+    localforage.setItem("tasks", useTaskStore.getState().tasks); // Save updated tasks
   };
+  
+  const handleDelete = () => {
+    deleteTask(task.id);
+    localforage.setItem("tasks", useTaskStore.getState().tasks); // Save updated tasks
+  };
+  
 
   return (
     <>

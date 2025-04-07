@@ -5,15 +5,16 @@ const FilterButtons = ({ tasks, setTasks }) => {
   
     const handleFilterChange = (filter) => {
       setActiveFilter(filter);
-  
+    
       if (filter === "all") {
         setTasks(tasks);
       } else if (filter === "completed") {
-        setTasks(tasks.filter((task) => task.completed === "true"));
+        setTasks(tasks.filter((task) => task.completed === true));
       } else if (filter === "pending") {
-        setTasks(tasks.filter((task) => task.completed !== "true"));
+        setTasks(tasks.filter((task) => task.completed !== true));
       }
     };
+    
   
     return (
       <div className="flex justify-center gap-4 mb-6 flex-wrap">

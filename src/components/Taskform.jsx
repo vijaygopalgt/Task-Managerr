@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useTaskStore from "../storage/taskStore";
+import localforage from 'localforage';
 
-const TaskForm = ({ tasks, setTasks }) => {
-  const { addTask } = useTaskStore();
+
+const TaskForm = () => {
+  const { addTask, loadTasks } = useTaskStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const [title, setTitle] = useState("");
@@ -10,14 +12,18 @@ const TaskForm = ({ tasks, setTasks }) => {
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
 
+  useEffect(() => {
+    loadTasks(); // Load tasks from local storage when the component mounts
+  }, [loadTasks]);
+
   const handleAddTask = (e) => {
     e.preventDefault();
-
+  
     if (!title.trim() || !dueDate) {
       alert("Task title and due date are required.");
       return;
     }
-
+  
     const newTask = {
       id: Date.now(),
       title,
@@ -26,16 +32,17 @@ const TaskForm = ({ tasks, setTasks }) => {
       category: category || "Uncategorized",
       completed: false,
     };
-
-    addTask(newTask);
-    setTasks([...tasks, newTask]);
-
+  
+    addTask(newTask); // Add task using the store
+    localforage.setItem("tasks", useTaskStore.getState().tasks); // Save to localforage
+  
     setTitle("");
     setDescription("");
     setDueDate("");
     setCategory("");
     setIsOpen(false);
   };
+  
 
   return (
     <>
